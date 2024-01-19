@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<!--Html from https://developers.google.com/meet/add-ons/guides/use-SDK?hl=ja-->
+<html style="width: 100%; height: 100%">
+
+<head>
+    <title>Side Panel Add-on</title>
+    <script src="https://www.gstatic.com/meetjs/addons/0.1.0/meet.addons.js"></script>
+</head>
+
+<body style="width: 100%; height: 100%; margin: 0">
+    <div style="display: flex; flex-direction: column; height: 100%">
+        <h1>Side Panel Add-on</h1>
+        <div>
+            <button id="load-main-stage">loadMainStage</button>
+        </div>
+        <div>
+            <button id="unload-main-stage">unLoadMainStage</button>
+        </div>
+        <div style="display: flex">
+            <div>
+                <button id="get-frame-type">getFrameType</button>
+            </div>
+            <div id="frameTypeResultContainer" style="padding: 0 20px; word-break: break-all;"></div>
+        </div>
+        <div style="display: flex">
+            <div>
+                <button id="get-meeting-info">getMeetingInfo</button>
+            </div>
+            <div id="meetingInfoResultContainer" style="padding: 0 20px; word-break: break-all;"></div>
+        </div>
+        <div style="display: flex">
+            <div>
+                <button id="notify-main-stage">notifyMainStage</button>
+            </div>
+            <div id="notificationResultContainer" style="padding: 0 20px; word-break: break-all;">
+                No notification received yet.
+            </div>
+        </div>
+        <div>
+            <div>
+                <button id="set-collaboration-starting-state">
+                    setCollaborationStartingState
+                </button>
+            </div>
+            <div>
+                <input type="text" id="sidePanelIframeUrl" style="margin-left: 20px"
+                    value="https://your_side_panel_iframe.url" />
+            </div>
+            <div>
+                <input type="text" id="mainStageIframeUrl" style="margin-left: 20px"
+                    value="https://your_main_stage_iframe.url" />
+            </div>
+            <div>
+                <input type="text" id="additionalData" style="margin-left: 20px" value="additional data" />
+            </div>
+        </div>
+        <div>
+            <div>
+                <button id="get-collaboration-starting-state">
+                    getCollaborationStartingState
+                </button>
+            </div>
+            <div id="receivedCollaborationStartingState"
+                style="margin-left: 20px; width: 300px; overflow-wrap: anywhere"></div>
+        </div>
+    </div>
+
+    <script>
+        let sidePanelClient;
+        async function init() {
+            const session = await window.meet.addon.createAddonSession({
+                cloudProjectNumber: "CLOUD_PROJECT_NUMBER",
+            });
+            console.log("Successfully constructed the add-on session.");
+            sidePanelClient = await session.createSidePanelClient();
+            console.log("Successfully constructed side panel client.");
+
+            document
+                .getElementById("load-main-stage")
+                .addEventListener("click", async () => {
+                    await sidePanelClient.loadMainStage();
+                });
+            document
+                .getElementById("unload-main-stage")
+                .addEventListener("click", async () => {
+                    await sidePanelClient.unloadMainStage();
+                });
+            document
+                .getElementById("get-frame-type")
+                .addEventListener("click", async () => {
+                    document.getElementById('frameTypeResultContainer').textContent = 'Frame type: ' + window.meet.addon.getFrameType();
+                });
+            document
+                .getElementById('get-meeting-info')
+                .addEventListener('click', async () => {
+                    document.getElementById('meetingInfoResultContainer').textContent = JSON.stringify(await sidePanelClient.getMeetingInfo());
+                });
+            document
+                .getElementById('notify-main-stage')
+                .addEventListener(
+                    'click', async () => {
+                        await sidePanelClient.notifyMainStage("Notification from side panel:" + new Date().toLocaleTimeString());
+                    });
+            document
+                .getElementById('set-collaboration-starting-state')
+                .addEventListener(
+                    'click', async () => {
+                        const sidePanelIframeUrlInputElement =
+                            document.getElementById('sidePanelIframeUrl');
+                        const mainStageIframeUrlInputElement =
+                            document.getElementById('mainStageIframeUrl');
+                        const additionalDataInputElement =
+                            document.getElementById('additionalData');
+                        await sidePanelClient.setCollaborationStartingState({
+                            sidePanelUrl: sidePanelIframeUrlInputElement.value,
+                            mainStageUrl: mainStageIframeUrlInputElement.value,
+                            additionalData: additionalDataInputElement.value,
+                        });
+                    });
+            document
+                .getElementById('get-collaboration-starting-state')
+                .addEventListener(
+                    'click', async () => {
+                        document.getElementById(
+                            'receivedCollaborationStartingState').textContent =
+                            JSON.stringify(
+                                await sidePanelClient.getCollaborationStartingState());
+                    });
+
+            sidePanelClient.on('frameToFrameMessage', (arg) => {
+                document.getElementById('notificationResultContainer').textContent =
+                    JSON.stringify(arg);
+            });
+        }
+        document.body.onload = () => {
+            init();
+        };
+    </script>
+</body>
+
+</html>
