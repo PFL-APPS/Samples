@@ -30,6 +30,12 @@
         </div>
         <div style="display: flex">
             <div>
+                <button id="get-frame-open-reason">getFrameOpenReason</button>
+            </div>
+            <div id="openReasonResultContainer" style="padding: 0 20px; word-break: break-all;"></div>
+        </div>
+        <div style="display: flex">
+            <div>
                 <button id="notify-main-stage">notifyMainStage</button>
             </div>
             <div id="notificationResultContainer" style="padding: 0 20px; word-break: break-all;">
@@ -44,7 +50,7 @@
             </div>
             <div>
                 <input type="text" id="sidePanelIframeUrl" style="margin-left: 20px"
-                    value="https://your_side_panel_iframe.url" />
+                    value="https://pfl-apps.github.io/Samples/meetAddonGoogleSamples/sidePanelSample.html" />
             </div>
             <div>
                 <input type="text" id="mainStageIframeUrl" style="margin-left: 20px"
@@ -71,9 +77,11 @@
             const session = await window.meet.addon.createAddonSession({
                 cloudProjectNumber: "866788378341",
             });
+            console.log(session);
             console.log("Successfully constructed the add-on session.");
             sidePanelClient = await session.createSidePanelClient();
             console.log("Successfully constructed side panel client.");
+            console.log(sidePanelClient);
 
             document
                 .getElementById("load-main-stage")
@@ -94,6 +102,11 @@
                 .getElementById('get-meeting-info')
                 .addEventListener('click', async () => {
                     document.getElementById('meetingInfoResultContainer').textContent = JSON.stringify(await sidePanelClient.getMeetingInfo());
+                });
+            document
+                .getElementById('get-frame-open-reason')
+                .addEventListener('click', async () => {
+                    document.getElementById('openReasonResultContainer').textContent = JSON.stringify(await sidePanelClient.getFrameOpenReason());
                 });
             document
                 .getElementById('notify-main-stage')
