@@ -144,6 +144,11 @@
                 document.getElementById('notificationResultContainer').textContent =
                     JSON.stringify(arg);
             });
+            sidePanelClient.on('userInitiatedCollaboration', (arg="no arg") => {
+                console.log("user initiated collaboration! arg="+arg);
+            });
+            console.log(session.createCoDoingClient());
+            console.log(session.createCoWatchingClient());
         }
         document.body.onload = () => {
             init();
