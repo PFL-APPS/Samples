@@ -1,0 +1,5 @@
+<button onclick="worker.port.postMessage('hi');">post</button>
+<script>
+  const worker = new SharedWorker(worker.js);
+  worker.port.onmessage = (e)=>{console.log(e);alert(e.data);}
+</script>
