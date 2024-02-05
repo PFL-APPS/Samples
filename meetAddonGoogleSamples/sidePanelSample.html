@@ -145,7 +145,7 @@
             document.getelementById('clear-collaboration-starting-state')
                 .addEventListener(
                     'click', async () => {
-                        await sidePanelClient.clearCollaborationStartingState());
+                        await sidePanelClient.clearCollaborationStartingState();
                     });
 
             sidePanelClient.on('frameToFrameMessage', (arg) => {
