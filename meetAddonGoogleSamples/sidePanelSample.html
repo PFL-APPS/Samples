@@ -142,7 +142,7 @@
                             JSON.stringify(
                                 await sidePanelClient.getCollaborationStartingState());
                     });
-            document.getelementById('clear-collaboration-starting-state')
+            document.getElementById('clear-collaboration-starting-state')
                 .addEventListener(
                     'click', async () => {
                         await sidePanelClient.clearCollaborationStartingState();
@@ -155,7 +155,7 @@
             sidePanelClient.on('userInitiatedCollaboration', (arg="no arg") => {
                 console.log("user initiated collaboration! arg="+arg);
             });
-            console.log(session.createCoDoingClient());
+            //console.log(session.createCoDoingClient());
             console.log(session.createCoWatchingClient());
         }
         document.body.onload = () => {
